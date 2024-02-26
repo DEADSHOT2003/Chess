@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class Knight extends Piece {
     public Knight(PieceFile pieceFile, int pieceRank, boolean isWhite) {
@@ -17,12 +17,12 @@ public class Knight extends Piece {
         return PieceType.BN;
     }
 
-    public boolean getisWhite() {
+    public boolean getIsWhite() {
         return isWhite;
     }
 
     @Override
-    public ReturnPiece.PieceFile getPieceFile() {
+    public PieceFile getPieceFile() {
         return pieceFile;
     }
 
@@ -32,7 +32,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean isMoveValid(int newRank, ReturnPiece.PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
+    public boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
             boolean playerWhite, char promotionPiece) {
 
         int rankDifference = Math.abs(newRank - pieceRank);
@@ -40,10 +40,10 @@ public class Knight extends Piece {
 
         if ((rankDifference == 2 && fileDifference == 1) || (rankDifference == 1 && fileDifference == 2)) {
 
-            for (ReturnPiece piece : piecesOnBoard) {
-                if (piece.pieceRank == newRank
-                        && piece.pieceFile.toString().charAt(0) == newFile.toString().charAt(0)) {
-
+            int i = 0;
+            while (i < piecesOnBoard.size()) {
+                ReturnPiece piece = piecesOnBoard.get(i);
+                if (piece.pieceRank == newRank && piece.pieceFile.toString().charAt(0) == newFile.toString().charAt(0)) {
                     if (piece.pieceType.toString().charAt(0) == 'W' && !playerWhite) {
                         if (piece.pieceType.toString().charAt(1) != 'K') {
                             capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
@@ -60,6 +60,7 @@ public class Knight extends Piece {
                         }
                     }
                 }
+                i++;
             }
             return true;
         }

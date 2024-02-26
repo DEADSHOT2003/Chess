@@ -1,8 +1,9 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class Rook extends Piece {
+    
     public Rook(PieceFile pieceFile, int pieceRank, boolean isWhite) {
         super(pieceFile, pieceRank, isWhite);
     }
@@ -17,12 +18,13 @@ public class Rook extends Piece {
         return PieceType.BR;
     }
 
-    public boolean getisWhite() {
+    @Override
+    public boolean getIsWhite() {
         return isWhite;
     }
 
     @Override
-    public ReturnPiece.PieceFile getPieceFile() {
+    public PieceFile getPieceFile() {
         return pieceFile;
     }
 
@@ -32,11 +34,10 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean isMoveValid(int newRank, ReturnPiece.PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
+    public boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
             boolean playerWhite, char promotionPiece) {
 
         if (newRank == pieceRank && newFile == pieceFile) {
-
             return false;
         }
 
@@ -44,38 +45,37 @@ public class Rook extends Piece {
         int fileDifference = Math.abs(newFile.ordinal() - pieceFile.ordinal());
 
         if (rankDifference != 0 && fileDifference != 0) {
-
             return false;
         }
 
         if (rankDifference == 0) {
-
             int fileDirection = Integer.compare(newFile.ordinal(), pieceFile.ordinal());
-            for (PieceFile file = PieceFile.values()[pieceFile.ordinal()
-                    + fileDirection]; file != newFile; file = PieceFile.values()[file.ordinal() + fileDirection]) {
+            PieceFile[] files = PieceFile.values();
+            int i = pieceFile.ordinal() + fileDirection;
+            while (files[i] != newFile) {
+                PieceFile file = files[i];
                 for (ReturnPiece piece : piecesOnBoard) {
                     if (piece.pieceRank == pieceRank && piece.pieceFile == file) {
-
                         return false;
                     }
                 }
+                i += fileDirection;
             }
         } else {
-
             int rankDirection = Integer.compare(newRank, pieceRank);
-            for (int rank = pieceRank + rankDirection; rank != newRank; rank += rankDirection) {
+            int rank = pieceRank + rankDirection;
+            while (rank != newRank) {
                 for (ReturnPiece piece : piecesOnBoard) {
                     if (piece.pieceRank == rank && piece.pieceFile == pieceFile) {
-
                         return false;
-
                     }
                 }
+                rank += rankDirection;
             }
         }
+
         for (ReturnPiece piece : piecesOnBoard) {
             if (piece.pieceRank == newRank && piece.pieceFile.toString().charAt(0) == newFile.toString().charAt(0)) {
-
                 if (piece.pieceType.toString().charAt(0) == 'W' && !playerWhite) {
                     if (piece.pieceType.toString().charAt(1) != 'K') {
                         capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
@@ -84,7 +84,6 @@ public class Rook extends Piece {
                 } else {
                     if (piece.pieceType.toString().charAt(0) == 'B' && playerWhite) {
                         if (piece.pieceType.toString().charAt(1) != 'K') {
-
                             capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                         }
                         return true;
@@ -94,7 +93,6 @@ public class Rook extends Piece {
                 }
             }
         }
-
         return true;
     }
 }

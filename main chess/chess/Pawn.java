@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class Pawn extends Piece {
     public Pawn(PieceFile pieceFile, int pieceRank, boolean isWhite) {
@@ -20,12 +20,12 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean getisWhite() {
+    public boolean getIsWhite() {
         return isWhite;
     }
 
     @Override
-    public ReturnPiece.PieceFile getPieceFile() {
+    public PieceFile getPieceFile() {
         return pieceFile;
     }
 
@@ -36,13 +36,14 @@ public class Pawn extends Piece {
 
     @Override
     public boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
-            boolean playerWhite, char promotionPiece) {
+                                boolean playerWhite, char promotionPiece) {
         if (newRank == pieceRank && newFile == pieceFile) {
             return false;
         }
+
         int rankDifference;
         int fileDifference;
-        if (getisWhite()) {
+        if (getIsWhite()) {
             rankDifference = (newRank - pieceRank);
             fileDifference = Math.abs(newFile.ordinal() - pieceFile.ordinal());
         } else {
@@ -54,10 +55,12 @@ public class Pawn extends Piece {
         int fileDirection = Integer.compare(newFile.ordinal(), pieceFile.ordinal());
 
         if (rankDifference == 1 && fileDifference == 0) {
-            for (ReturnPiece piece : piecesOnBoard) {
-                if (piece.pieceRank == newRank && piece.pieceFile == newFile) {
+            int i = 0;
+            while (i < piecesOnBoard.size()) {
+                if (piecesOnBoard.get(i).pieceRank == newRank && piecesOnBoard.get(i).pieceFile == newFile) {
                     return false;
                 }
+                i++;
             }
             pawnPromo(newRank, newFile, piecesOnBoard, playerWhite, promotionPiece);
             enPassant = false;
@@ -66,11 +69,13 @@ public class Pawn extends Piece {
         } else if (rankDifference == 2 && fileDifference == 0
                 && ((isWhite && pieceRank == 2) || (!isWhite && pieceRank == 7)) && fileDirection == 0) {
             int intermediateRank = pieceRank + rankDirection;
-            for (ReturnPiece piece : piecesOnBoard) {
-                if ((piece.pieceRank == intermediateRank && piece.pieceFile == pieceFile)
-                        || (piece.pieceRank == newRank && piece.pieceFile == newFile)) {
+            int i = 0;
+            while (i < piecesOnBoard.size()) {
+                if ((piecesOnBoard.get(i).pieceRank == intermediateRank && piecesOnBoard.get(i).pieceFile == pieceFile)
+                        || (piecesOnBoard.get(i).pieceRank == newRank && piecesOnBoard.get(i).pieceFile == newFile)) {
                     return false;
                 }
+                i++;
             }
             pieceMoveCount++;
             if (pieceMoveCount == 1) {
@@ -87,21 +92,24 @@ public class Pawn extends Piece {
                 int enPassantRank = (playerWhite) ? (newRank - 1) : (newRank + 1);
                 int enPassantFile = newFile.ordinal();
 
-                for (ReturnPiece piece : piecesOnBoard) {
-                    if (piece.pieceRank == enPassantRank && piece.pieceFile == PieceFile.values()[enPassantFile]) {
+                int i = 0;
+                while (i < piecesOnBoard.size()) {
+                    if (piecesOnBoard.get(i).pieceRank == enPassantRank && piecesOnBoard.get(i).pieceFile == PieceFile.values()[enPassantFile]) {
 
                         enPassantCapture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard, playerWhite);
                         pieceMoveCount++;
                         return true;
                     }
+                    i++;
                 }
             }
 
-            for (ReturnPiece piece : piecesOnBoard) {
-                if (piece.pieceRank == newRank && piece.pieceFile == newFile) {
+            int i = 0;
+            while (i < piecesOnBoard.size()) {
+                if (piecesOnBoard.get(i).pieceRank == newRank && piecesOnBoard.get(i).pieceFile == newFile) {
 
-                    if (piece.pieceType.toString().charAt(0) == 'W' && !playerWhite) {
-                        if (piece.pieceType.toString().charAt(1) != 'K') {
+                    if (piecesOnBoard.get(i).pieceType.toString().charAt(0) == 'W' && !playerWhite) {
+                        if (piecesOnBoard.get(i).pieceType.toString().charAt(1) != 'K') {
                             capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                         }
 
@@ -110,8 +118,8 @@ public class Pawn extends Piece {
                         pieceMoveCount++;
 
                         return true;
-                    } else if (piece.pieceType.toString().charAt(0) == 'B' && playerWhite) {
-                        if (piece.pieceType.toString().charAt(1) != 'K') {
+                    } else if (piecesOnBoard.get(i).pieceType.toString().charAt(0) == 'B' && playerWhite) {
+                        if (piecesOnBoard.get(i).pieceType.toString().charAt(1) != 'K') {
                             capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                         }
 
@@ -122,6 +130,7 @@ public class Pawn extends Piece {
                         return false;
                     }
                 }
+                i++;
             }
         }
 
@@ -129,9 +138,10 @@ public class Pawn extends Piece {
     }
 
     public void enPassantCapture(ReturnPiece.PieceFile movingFile, int movingRank, ReturnPiece.PieceFile takeFile,
-            int takeRank, ArrayList<ReturnPiece> piecesOnBoard, boolean playerWhite) {
+                                  int takeRank, ArrayList<ReturnPiece> piecesOnBoard, boolean playerWhite) {
 
-        for (int i = 0; i < piecesOnBoard.size(); i++) {
+        int i = 0;
+        while (i < piecesOnBoard.size()) {
             if (playerWhite) {
                 if (piecesOnBoard.get(i).pieceFile.toString().charAt(0) == takeFile.toString().charAt(0)
                         && piecesOnBoard.get(i).pieceRank == takeRank - 1) {
@@ -144,11 +154,12 @@ public class Pawn extends Piece {
                     piecesOnBoard.remove(i);
                 }
             }
+            i++;
         }
     }
 
     public void pawnPromo(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard, boolean playerWhite,
-            char promotionPiece) {
+                          char promotionPiece) {
 
         if ((newRank == 1 && !playerWhite) || (newRank == 8 && playerWhite)) {
 
@@ -172,11 +183,11 @@ public class Pawn extends Piece {
                     promotedPiece = new Queen(newFile, newRank, playerWhite);
                     break;
                 default:
-                    promotedPiece = new Queen(newFile, newRank, playerWhite);
-                    break;
-            }
-            piecesOnBoard.add(promotedPiece);
+                promotedPiece = new Queen(newFile, newRank, playerWhite);
+                break;
         }
+        piecesOnBoard.add(promotedPiece);
     }
-
 }
+}
+

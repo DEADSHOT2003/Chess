@@ -10,6 +10,12 @@ class ReturnPiece {
     PieceFile pieceFile;
     int pieceRank;  // 1..8
     
+    public ReturnPiece(PieceType pieceType, PieceFile pieceFile, int pieceRank) {
+        this.pieceType = pieceType;
+        this.pieceFile = pieceFile;
+        this.pieceRank = pieceRank;
+    }
+    
     public String toString() {
         return "" + pieceFile + pieceRank + ":" + pieceType;
     }
@@ -43,6 +49,7 @@ public class Chess {
     enum Player { white, black }
     
     private static Player currentPlayer = Player.white; // Assuming white starts
+    private static ArrayList<ReturnPiece> piecesOnBoard; // Store the current state of the board
     
     // Method to switch player turn
     private static void switchPlayer() {
@@ -79,9 +86,23 @@ public class Chess {
     public static void start() {
         // Logic to reset the game
         currentPlayer = Player.white; // Reset current player to white
-        // Reset the board and any other game state
+        initializeBoard(); // Initialize the board
     }
-
-
     
+    /**
+     * Initialize the chess board to its starting position.
+     */
+    private static void initializeBoard() {
+        piecesOnBoard = new ArrayList<>();
+
+        // Add white pieces
+        for (int i = 0; i < 8; i++) {
+            piecesOnBoard.add(new ReturnPiece(ReturnPiece.PieceType.values()[i], ReturnPiece.PieceFile.values()[i], 2));
+        }
+
+        // Add black pieces
+        for (int i = 6; i < 12; i++) {
+            piecesOnBoard.add(new ReturnPiece(ReturnPiece.PieceType.values()[i], ReturnPiece.PieceFile.values()[i - 6], 7));
+        }
+    }
 }

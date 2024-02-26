@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class Bishop extends Piece {
     public Bishop(PieceFile pieceFile, int pieceRank, boolean isWhite) {
@@ -17,12 +17,13 @@ public class Bishop extends Piece {
         return PieceType.BB;
     }
 
-    public boolean getisWhite() {
+    @Override
+    public boolean getIsWhite() {
         return isWhite;
     }
 
     @Override
-    public ReturnPiece.PieceFile getPieceFile() {
+    public PieceFile getPieceFile() {
         return pieceFile;
     }
 
@@ -32,7 +33,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean isMoveValid(int newRank, ReturnPiece.PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
+    public boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
             boolean playerWhite, char promotionPiece) {
         if (newRank == pieceRank && newFile == pieceFile) {
             return false;
@@ -51,26 +52,29 @@ public class Bishop extends Piece {
         int currentRank = pieceRank + rankDirection;
         PieceFile currentFile = PieceFile.values()[pieceFile.ordinal() + fileDirection];
         while (currentRank != newRank && currentFile != newFile) {
-            for (ReturnPiece piece : piecesOnBoard) {
-                if (piece.pieceRank == currentRank && piece.pieceFile == currentFile) {
+            int i = 0;
+            while (i < piecesOnBoard.size()) {
+                if (piecesOnBoard.get(i).pieceRank == currentRank && piecesOnBoard.get(i).pieceFile == currentFile) {
                     return false;
                 }
+                i++;
             }
             currentRank += rankDirection;
             currentFile = PieceFile.values()[currentFile.ordinal() + fileDirection];
         }
 
-        for (ReturnPiece piece : piecesOnBoard) {
-            if (piece.pieceRank == newRank && piece.pieceFile.toString().charAt(0) == newFile.toString().charAt(0)) {
+        int j = 0;
+        while (j < piecesOnBoard.size()) {
+            if (piecesOnBoard.get(j).pieceRank == newRank && piecesOnBoard.get(j).pieceFile.toString().charAt(0) == newFile.toString().charAt(0)) {
 
-                if (piece.pieceType.toString().charAt(0) == 'W' && !playerWhite) {
-                    if (piece.pieceType.toString().charAt(1) != 'K') {
+                if (piecesOnBoard.get(j).pieceType.toString().charAt(0) == 'W' && !playerWhite) {
+                    if (piecesOnBoard.get(j).pieceType.toString().charAt(1) != 'K') {
                         capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                     }
                     return true;
                 } else {
-                    if (piece.pieceType.toString().charAt(0) == 'B' && playerWhite) {
-                        if (piece.pieceType.toString().charAt(1) != 'K') {
+                    if (piecesOnBoard.get(j).pieceType.toString().charAt(0) == 'B' && playerWhite) {
+                        if (piecesOnBoard.get(j).pieceType.toString().charAt(1) != 'K') {
                             capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                         }
                         return true;
@@ -79,6 +83,7 @@ public class Bishop extends Piece {
                     }
                 }
             }
+            j++;
         }
         return true;
     }

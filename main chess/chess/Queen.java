@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class Queen extends Piece {
 
@@ -18,12 +18,12 @@ public class Queen extends Piece {
         return PieceType.BQ;
     }
 
-    public boolean getisWhite() {
+    public boolean getIsWhite() {
         return isWhite;
     }
 
     @Override
-    public ReturnPiece.PieceFile getPieceFile() {
+    public PieceFile getPieceFile() {
         return pieceFile;
     }
 
@@ -33,11 +33,10 @@ public class Queen extends Piece {
     }
 
     @Override
-    public boolean isMoveValid(int newRank, ReturnPiece.PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
+    public boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
             boolean playerWhite, char promotionPiece) {
 
         if (newRank == pieceRank && newFile == pieceFile) {
-
             return false;
         }
 
@@ -48,32 +47,33 @@ public class Queen extends Piece {
         int fileDirection = Integer.compare(newFile.ordinal(), pieceFile.ordinal());
 
         if (rankDifference == 0 || fileDifference == 0 || rankDifference == fileDifference) {
-
             int currentRank = pieceRank + rankDirection;
             PieceFile currentFile = PieceFile.values()[pieceFile.ordinal() + fileDirection];
-            while (currentRank != newRank || currentFile != newFile) {
-                for (ReturnPiece piece : piecesOnBoard) {
-                    if (piece.pieceRank == currentRank && piece.pieceFile == currentFile) {
 
+            while (currentRank != newRank || currentFile != newFile) {
+                int i = 0;
+                while (i < piecesOnBoard.size()) {
+                    if (piecesOnBoard.get(i).pieceRank == currentRank && piecesOnBoard.get(i).pieceFile == currentFile) {
                         return false;
                     }
+                    i++;
                 }
                 currentRank += rankDirection;
                 currentFile = PieceFile.values()[currentFile.ordinal() + fileDirection];
             }
 
-            for (ReturnPiece piece : piecesOnBoard) {
-                if (piece.pieceRank == newRank && piece.pieceFile == newFile) {
-                    if (piece.pieceType.toString().charAt(0) != pieceType.toString().charAt(0)) {
-
-                        if (piece.pieceType.toString().charAt(0) == 'W' && !playerWhite) {
-                            if (piece.pieceType.toString().charAt(1) != 'K') {
+            int j = 0;
+            while (j < piecesOnBoard.size()) {
+                if (piecesOnBoard.get(j).pieceRank == newRank && piecesOnBoard.get(j).pieceFile == newFile) {
+                    if (piecesOnBoard.get(j).pieceType.toString().charAt(0) != pieceType.toString().charAt(0)) {
+                        if (piecesOnBoard.get(j).pieceType.toString().charAt(0) == 'W' && !playerWhite) {
+                            if (piecesOnBoard.get(j).pieceType.toString().charAt(1) != 'K') {
                                 capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                             }
                             return true;
                         } else {
-                            if (piece.pieceType.toString().charAt(0) == 'B' && playerWhite) {
-                                if (piece.pieceType.toString().charAt(1) != 'K') {
+                            if (piecesOnBoard.get(j).pieceType.toString().charAt(0) == 'B' && playerWhite) {
+                                if (piecesOnBoard.get(j).pieceType.toString().charAt(1) != 'K') {
                                     capture(pieceFile, pieceRank, newFile, newRank, piecesOnBoard);
                                 }
                                 return true;
@@ -84,11 +84,10 @@ public class Queen extends Piece {
                     }
                     return false;
                 }
+                j++;
             }
-
             return true;
         }
-
         return false;
     }
 }

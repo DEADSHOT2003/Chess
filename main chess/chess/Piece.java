@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public abstract class Piece extends ReturnPiece {
 
@@ -8,11 +8,9 @@ public abstract class Piece extends ReturnPiece {
     public int pieceMoveCount;
 
     public Piece(PieceFile pieceFile, int pieceRank, boolean isWhite) {
+        super(null, pieceFile, pieceRank); // Calling superclass constructor
         this.pieceType = isWhite ? getWhitePieceType() : getBlackPieceType();
-        this.pieceFile = pieceFile;
-        this.pieceRank = pieceRank;
         this.isWhite = isWhite;
-
     }
 
     public abstract PieceType getWhitePieceType();
@@ -23,7 +21,7 @@ public abstract class Piece extends ReturnPiece {
 
     public abstract int getPieceRank();
 
-    public abstract boolean getisWhite();
+    public abstract boolean getIsWhite();
 
     public abstract boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
             boolean playerWhite, char promotionPiece);
@@ -31,12 +29,14 @@ public abstract class Piece extends ReturnPiece {
     public void capture(ReturnPiece.PieceFile movingFile, int movingRank, ReturnPiece.PieceFile takeFile, int takeRank,
             ArrayList<ReturnPiece> piecesOnBoard) {
 
-        for (int i = 0; i < piecesOnBoard.size(); i++) {
+        int i = 0;
+        while (i < piecesOnBoard.size()) {
             if (piecesOnBoard.get(i).pieceFile.toString().charAt(0) == takeFile.toString().charAt(0)
                     && piecesOnBoard.get(i).pieceRank == takeRank) {
                 piecesOnBoard.remove(i);
+            } else {
+                i++;
             }
         }
     }
 }
-

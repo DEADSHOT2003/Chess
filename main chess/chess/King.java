@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class King extends Piece {
     public King(PieceFile pieceFile, int pieceRank, boolean isWhite) {
@@ -17,12 +17,12 @@ public class King extends Piece {
         return PieceType.BK;
     }
 
-    public boolean getisWhite() {
+    public boolean getIsWhite() {
         return isWhite;
     }
 
     @Override
-    public ReturnPiece.PieceFile getPieceFile() {
+    public PieceFile getPieceFile() {
         return pieceFile;
     }
 
@@ -32,7 +32,7 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean isMoveValid(int newRank, ReturnPiece.PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
+    public boolean isMoveValid(int newRank, PieceFile newFile, ArrayList<ReturnPiece> piecesOnBoard,
             boolean playerWhite, char promotionPiece) {
         int rankDifference = Math.abs(newRank - pieceRank);
         int fileDifference = Math.abs(newFile.ordinal() - pieceFile.ordinal());
@@ -46,7 +46,9 @@ public class King extends Piece {
         }
 
         if (rankDifference <= 1 && fileDifference <= 1) {
-            for (ReturnPiece piece : piecesOnBoard) {
+            int i = 0;
+            while (i < piecesOnBoard.size()) {
+                ReturnPiece piece = piecesOnBoard.get(i);
                 if (piece.pieceRank == newRank
                         && piece.pieceFile.toString().charAt(0) == newFile.toString().charAt(0)) {
 
@@ -66,6 +68,7 @@ public class King extends Piece {
                         }
                     }
                 }
+                i++;
             }
             return true;
         }
@@ -75,8 +78,8 @@ public class King extends Piece {
     public boolean isKingInCheck(ArrayList<ReturnPiece> piecesOnBoard) {
 
         int piecesChecking = 0;
-        for (ReturnPiece piece : piecesOnBoard) {
-
+        for (int i = 0; i < piecesOnBoard.size(); i++) {
+            ReturnPiece piece = piecesOnBoard.get(i);
             if (piece.pieceType.toString().charAt(1) == 'P') {
                 Pawn castedPawnPiece = (Pawn) piece;
 

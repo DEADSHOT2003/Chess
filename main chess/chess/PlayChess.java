@@ -43,7 +43,7 @@ public class PlayChess {
 		if (pieces != null) {
 			printPiecesOnBoard(pieces, board);
 		}
-		for (int r=0; r < 8; r++) {
+		for (int r=0; 		r < 8; r++) {
 			for (int c=0; c < 8; c++) {
 				System.out.print(board[r][c] + " ");
 			}	
@@ -59,7 +59,7 @@ public class PlayChess {
 				if (r % 2 == 0) {
 					board[r][c] = c % 2 == 0 ? "  " : "##";
 				} else {
-					board[r][c] = c % 2 == 0 ? "##" : "  ";
+					board[r][c] = c % 2 == 0 ? "##" : "  ";	
 				}
 			}
 		}
